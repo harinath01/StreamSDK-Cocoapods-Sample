@@ -24,24 +24,10 @@ class ViewController: UIViewController {
                 print("Setup error: \(error!.localizedDescription)")
                 return
             }
-
-            self.configurePlayerQuality()
-        }
-    }
-
-    private func configurePlayerQuality() {
-        let allowedResolutions = ["240p", "360p", "480p"]
-
-        if let allowedMaxResolution = allowedResolutions.last,
-            let selectedVideoQuality = player?.availableVideoQualities.first(where: { $0.resolution == allowedMaxResolution }) {
-            player?.changeVideoQuality(to: selectedVideoQuality)
-        } else {
-            print("No matching video quality found in allowed resolutions.")
-        }
-
-        player?.availableVideoQualities = (player?.availableVideoQualities ?? []).filter { quality in
-            allowedResolutions.contains { allowedResolution in
-                quality.resolution.contains(allowedResolution)
+            
+            self.player?.limitAvailableVideoQualities(byMaxHeight: 480)
+            if let maxQuality = self.player?.availableVideoQualities.last {
+                self.player?.changeVideoQuality(to: maxQuality)
             }
         }
     }
